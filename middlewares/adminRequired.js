@@ -3,10 +3,9 @@ const request = require('request');
 module.exports = async (ctx, next) => {
 
     let token = ctx.query.token;
-    console.log("user:"+ctx.session.user);
-    console.log("token:"+token);
     //如果本站已经存在凭证，便不需要去鉴权
     if (ctx.session.user) {
+        console.log('已登录');
         await next();
         return;
     }

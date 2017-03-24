@@ -9,10 +9,12 @@ const hbs = require('koa-hbs');
 
 const index = require('./routes');
 const adminRequired = require('./middlewares/adminRequired');
-const session = require('./util/store');
+const session = require('koa-session-minimal');
 
 // 使用session中间件
-app.use(session);
+app.use(session({
+    key: 'SESSION_ID'
+}));
 onerror(app);
 app.use(logger());
 app.use(bodyParser());
