@@ -21,10 +21,7 @@ app.use(logger());
 app.use(bodyParser());
 
 // 渲染引擎
-hbs.registerHelper('parseDate', (date) =>{
-    console.log(date);
-    return new Date(date).toLocaleString();
-});
+hbs.registerHelper('parseDate', (date) => new Date(date).toLocaleString());
 app.use(hbs.middleware({
     viewPath: __dirname + '/views',
     defaultLayout: 'layout',
