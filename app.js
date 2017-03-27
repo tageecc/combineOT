@@ -11,6 +11,7 @@ const index = require('./routes');
 const adminRequired = require('./middlewares/adminRequired');
 const session = require('koa-session-minimal');
 
+
 // 使用session中间件
 app.use(session({
     key: 'SESSION_ID'
@@ -20,6 +21,10 @@ app.use(logger());
 app.use(bodyParser());
 
 // 渲染引擎
+hbs.registerHelper('parseDate', (date) =>{
+    console.log(date);
+    return new Date(date).toLocaleString();
+});
 app.use(hbs.middleware({
     viewPath: __dirname + '/views',
     defaultLayout: 'layout',
@@ -30,6 +35,7 @@ app.use(hbs.middleware({
 app.use(statics(__dirname + '/public'));
 
 // 路由配置
+app.use(adminRequired);
 app.use(index.routes());
 app.use(index.allowedMethods());
 

@@ -21,10 +21,14 @@ let Combine = sequelize.define('combine', {
         allowNull: false,
         comment: "分支"
     },
+    form: {
+        type: sequelize.STRING(200),
+        allowNull: false,
+        comment: "表单"
+    },
     status: {
-        type: sequelize.INTEGER,
-        defaultValue: 0,
-        mark: '未处理',
+        type: sequelize.STRING(50),
+        defaultValue: '未处理',
         comment: "状态"
     }
 });

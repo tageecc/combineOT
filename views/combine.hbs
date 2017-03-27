@@ -1,4 +1,4 @@
-<h3 class="tit">用户管理</h3>
+<h3 class="tit">合并申请</h3>
 <div class="clearfix">
     <div class="search">
         <i class="fa fa-search"></i>
@@ -15,36 +15,105 @@
         <thead>
         <tr>
             <th width="30"></th>
-            <th>用户名</th>
-            <th>昵称</th>
-            <th>电话</th>
-            <th>住址</th>
-            <th>上次登录</th>
+            <th>分支</th>
+            <th>表单</th>
+            <th>申请人</th>
+            <th>申请时间</th>
+            <th>合并状态</th>
         </tr>
         </thead>
         <tbody>
-
+        {{#if combines.length}}
+            {{#each combines}}
+                <tr>
+                    <td>
+                        <input data-cid="{{cid}}" type="checkbox" id="checkbox_{{@index}}">
+                        <label for="checkbox_{{@index}}"></label>
+                    </td>
+                    <td>{{branch}}</td>
+                    <td>{{form}}</td>
+                    <td>{{nick}}</td>
+                    <td>{{parseDate createdAt}}</td>
+                    <td>{{status}}</td>
+                </tr>
+            {{/each}}
+        {{/if}}
         </tbody>
     </table>
 </div>
 
-<script id="tpl_add_user" type="text/html">
+<script id="tpl_add" type="text/html">
     <div class="content">
-        <p class="tit">添加用户</p>
+        <p class="tit">合并申请</p>
         <form action="" onsubmit="return false;">
-            <label for="username">用户名：</label>
-            <input type="text" id="username" name="username" autocomplete="off" required>
-            <label for="password">密码：</label>
-            <input type="password" id="password" name="password" autocomplete="off" required>
-            <label for="nick">昵称：</label>
-            <input type="text" id="nick" name="nick" autocomplete="off" required>
-            <label for="address">住址：</label>
-            <input type="text" id="address" name="address" autocomplete="off" required>
-            <label for="phone">电话：</label>
-            <input type="number" id="phone" name="phone" autocomplete="off" required>
-            <button id="j_add_user" class="submit">添加</button>
+            <label for="nick">申请人：</label>
+            <input type="text" id="nick" name="nick" value="张泽旋" disabled>
+            <label for="branch">分支：</label>
+            <select name="branch" id="branch">
+                <option value="分支1">分支1</option>
+                <option value="分支2">分支2</option>
+                <option value="分支3">分支3</option>
+            </select>
+            <label for="form">表单：</label>
+            <select name="form" id="form">
+                <option value="表单1">表单1</option>
+                <option value="分支2">表单2</option>
+                <option value="表单3">表单3</option>
+            </select>
+            <button id="j_add_combine" class="submit">添加</button>
         </form>
     </div>
+</script>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+<script>
+    /*添加合并申请*/
+    $('.btn-add').on('click', function () {
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1,
+            skin: 'g-add-user',
+            content: $('#tpl_add').html()
+        });
+    });
+    $(document).on('click', '#j_add_combine', function () {
+        var data = {
+            uid: "{{user.uid}}",
+            nick: $('#nick').val(),
+            branch: $('#branch').val(),
+            form: $('#form').val(),
+        };
+        $.post('/combine/add', data, function (res) {
+            if (res.code === 100) {
+                layer.msg(res.message);
+                setTimeout(function () {
+                    layer.closeAll('page');
+                }, 500);
+            } else {
+                layer.msg(res.message, function () {
+                });
+            }
+        })
+    });
+
+    /*删除用户*/
+    $('.btn-delete').on('click', function () {
+        var users = $('.user-list input:checked');
+        if (users.length == 0) {
+            layer.msg('请先选择要删除的用户！', function () {
+            });
+            return false;
+        }
+        var uid = [];
+        users.map(function (i, v) {
+            uid.push($(v).data('uid'));
+        });
+        $.post('/admin/user/delete', {uid: uid}, function (res) {
+            console.log(res);
+        });
+    });
 </script>
 </body>
 </html>
